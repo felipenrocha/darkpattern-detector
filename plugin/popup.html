@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detector de Dark Patterns</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Forçando tamanho fixo */
+        body {
+            width: 400px;
+            height: 500px;
+            overflow: hidden;
+            /* Evita barras de rolagem */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="popup-container">
+        <!-- Seletor de idioma -->
+        <div class="language-select">
+            <label for="language" class="select-label">Idioma:</label>
+            <select id="language">
+                <option value="pt">Português</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+
+        <h1>Detector de Dark Patterns</h1>
+        <p>Selecione os padrões que deseja detectar:</p>
+
+        <!-- Categoria Urgência -->
+        <h2 class="category-title">Urgência</h2>
+        <div class="checkbox-group">
+            <input type="checkbox" id="fake-timer" name="fake-timer" checked>
+            <label for="fake-timer">Fake Countdown Timer</label>
+            <img src="info-icon.png" alt="Info" class="info-icon" id="fake-timer-info"
+                title="Cronômetros falsos de promoções criadas para gerar a sensação de urgência na compra.">
+        </div>
+
+
+        <!-- Modal (Popup)  fake countdown timer -->
+        <div id="info-fake-timer-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn-fake-timer">&times;</span>
+                <h2>Fake Countdown Timer</h2>
+                <p style="text-align: justify;">Cronômetros falsos de promoções são usados para criar um senso de
+                    urgência no consumidor,
+                    pressionando-o a tomar decisões rápidas.</p>
+                <p style="text-align: justify;">Quando um usuário é pressionado por um limite de tempo, sua capacidade
+                    de analisar criticamente as informações apresentadas é reduzida devido à escassez de tempo e ao
+                    impacto do estresse ou da ansiedade. Provedores podem explorar essa situação para induzi-lo a tomar
+                    decisões rapidamente, muitas vezes contrárias aos seus próprios interesses. </p>
+                <p>Fonte: <a href="https://www.deceptive.design/types/fake-urgency" target="_blank"
+                        rel="noopener noreferrer">
+                        Deceptive Design - Fake Urgency
+                    </a></p>
+                <p style="text-align: justify;">Exemplo de Fake Countdown Timer:</p>
+                <img src="examples/fake-countdown.png" alt="Exemplo de contagem regressiva falsa"
+                    style="display: block; margin: 20px auto; height: 170px;">
+            </div>
+        </div>
+
+
+
+        <!-- Categoria Escassez -->
+        <h2 class="category-title">Escassez</h2>
+        <div class="checkbox-group">
+            <input type="checkbox" id="low-stock" name="low-stock">
+            <label for="low-stock">Low Stock Messages</label>
+            <img src="info-icon.png" alt="Info" class="info-icon"
+                title="Mensagens que indicam baixo estoque falsamente, criando medo de perder a oportunidade de compra.">
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="high-demand" name="high-demand">
+            <label for="high-demand">High Demand Messages</label>
+            <img src="info-icon.png" alt="Info" class="info-icon"
+                title="Mensagens que dizem que o item está muito procurado, criando medo de perder a oportunidade de compra.">
+        </div>
+    </div>
+    <script src="popup.js"></script>
+    <script src="content.js"></script>
+
+    <script src="urgencia.js"></script>
+</body>
+
+</html>
