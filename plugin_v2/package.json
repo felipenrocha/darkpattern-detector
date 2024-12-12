@@ -1,0 +1,39 @@
+{
+  "name": "",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "license": "AGPL-version-3.0",
+  "private": false,
+  "engines": {
+    "node": ">= 14.0.0",
+    "npm": ">= 6.0.0"
+  },
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": "",
+  "keywords": [],
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "contributors": [],
+  "scripts": {
+    "dev": "",
+    "test": "",
+    "clean": "rimraf dist",
+    "compile": "npx tsc",
+    "copy-assets": "robocopy . dist /E /XF tsconfig.json /XD src\\background /XD dist //node_modules manifest.json package.json package-lock.json src\\frontend src\\images",
+    "build": "npm run clean && npm run compile && npm run copy-assets"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.287",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Access Page Elements",
-  "version": "1.0",
+  "name": "Dark Pattern Detector",
+  "version": "0.0.1",
   "permissions": [
     "scripting",
     "activeTab"
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_icon": "info-icon.png"
+    "default_icon": "images/info-icon.png"
   },
   "content_scripts": [
     {
