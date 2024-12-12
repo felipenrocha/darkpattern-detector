@@ -13,10 +13,24 @@ function getElementsCountdown(elements) {
   let foundElements = [];
 
   elements.forEach((element) => {
+    // Check if any ancestor of the current element is already in foundElements
+    let ancestorExists = false;
+    let currentElement = element;
+
+    while (currentElement && currentElement.tagName !== 'HTML') {
+      if (foundElements.includes(currentElement)) {
+        ancestorExists = true;
+        break;
+      }
+      currentElement = currentElement.parentElement; // Move to the parent element
+    }
+
+    if (ancestorExists) {
+      return; // Skip this element if any ancestor is already in foundElements
+    }
+
     // Check classes
-    // console.log(element.tagName);
-    
-    if (element.tagName != 'BODY' && element.tagName != 'HTML') {
+    if (element.tagName !== 'BODY' && element.tagName !== 'HTML') {
       for (let i = 0; i < classesCountdown.length; i++) {
         const currentClass = classesCountdown[i];
         if (element.className && element.className.toString().includes(currentClass)) {
@@ -40,7 +54,6 @@ function getElementsCountdown(elements) {
 
   return foundElements;
 }
-
 
 // Mostra o modal ao clicar no ícone
 infoIcon.addEventListener('click', () => {
