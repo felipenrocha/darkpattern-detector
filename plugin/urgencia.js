@@ -1,30 +1,17 @@
 // arquivo designado para programar a deteccao e lóogica para seção dos dark patterns de urgencia
 
-let classesCountdown = ['timer', 'countdown', 'clock', 'time'];
+let classesCountdown = ['timer', 'countdown', 'clock'];
 let contentCountdown = ["Expira em", "Resta Apenas", "Termina em", "dias restantes"]
-let foundElements = [];
+let shopContent = ["R$", "US$"]
+let createdDivs = [];
+let foundElements = []
+let siblingsArray = []
+let styledElements
+let shopPage = false;  //bool to check if the current page is a shopping one
 
-function arraysIguais(arr1, arr2) {
-  if (arr1.length !== arr2.length) {
-    return false; // Se os arrays têm tamanhos diferentes, não são iguais
-  }
 
-  // Ordena os arrays e compara elemento por elemento
-  arr1.sort();
-  arr2.sort();
-
-  // Verifica se os arrays têm os mesmos elementos
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i] !== arr2[i]) {
-      return false; // Se algum elemento for diferente, os arrays não são iguais
-    }
-  }
-
-  return true; // Arrays são iguais
-}
 
 // Function that returns elements div with countdown classes or content
-
 function addStyleElement(element) {
   // Função que irá adicionar na página a borda vermelha e mensagem ao passar o mouse por cima do div
 
@@ -33,7 +20,7 @@ function addStyleElement(element) {
   wrapper.style.border = "2px solid red"; // Adiciona borda vermelha
   wrapper.style.display = "inline-block"; // Ajusta para envolver apenas o conteúdo do elemento
   wrapper.style.position = "relative"; // Evita o impacto no layout e permite controle do posicionamento interno
-
+  wrapper.id = "wrapper-dark-pattern";
   // Adiciona efeito de hover
   wrapper.style.transition = "border-color 0.3s ease";
   wrapper.addEventListener("mouseenter", () => {
@@ -45,6 +32,7 @@ function addStyleElement(element) {
 
   // Adiciona uma mensagem ao passar o mouse
   const hoverMessage = document.createElement("div");
+  hoverMessage.id ="hoverMessage-darkPattern-countdown";
   hoverMessage.innerHTML = "Possível Dark Pattern: Fake countdown timer. <br>" +
     "Cuidado, esse tipo de contagem regressiva muitas vezes não reflete o tempo real da promoção <br>" +
     "e pode ser usado para criar urgência artificial.";
@@ -70,14 +58,17 @@ function addStyleElement(element) {
   });
 
   // Move o elemento para dentro do div pai
-  element.parentNode.insertBefore(wrapper, element);
+  if (element.parentNode) {
+    element.parentNode.insertBefore(wrapper, element);
+  }
   wrapper.appendChild(element);
   wrapper.appendChild(hoverMessage);
+  createdDivs.push(wrapper);
 }
 function removeStyleElement(element) {
 
   //funcao que ira remover na pagina da w3eb a borda vermelha e mensagem ao passar o mouse por cima do div
-  if (element.tagName && element.tagName.toLowerCase() === "div" && element.style.border === "2px solid red") {
+  if (element.tagName && element.tagName.toLowerCase() === "div" && element.style.border === "2px solid red" && element.id === "wrapper-dark-pattern") {
     const parent = element.parentNode;
 
     // Move todos os filhos de 'element' para o 'parent'
@@ -97,66 +88,123 @@ function removeStyleElement(element) {
   }
 
 }
+function removeWrapper(element) {
+  if (element.id === "wrapper-dark-pattern") {
+    element.style.border = ""; // Adiciona borda vermelha
+    element.style.display = ""; // Ajusta para envolver apenas o conteúdo do elemento
+    element.style.position = ""; // Evita o impacto no layout e permite controle do posicionamento interno 
 
+  }
+}
 function getElementsCountdown(elements) {
-  let newElements = [];
+  let foundElements = [];
+  let shopPage = false;
 
   elements.forEach((element) => {
-    // Check if any ancestor of the current element is already in newElements
-    let ancestorExists = false;
-    let currentElement = element;
-
-    while (currentElement && currentElement.tagName !== 'HTML' && currentElement.tagName !== 'BODY') {
-      if (newElements.includes(currentElement)) {
-        ancestorExists = true;
-        break;
+    if(element.tagName == "BODY" || element.tagName == "SCRIPT" || element.tagName == "HTML" || element.tagName == "HEAD"){
+      return; // SKIP
+    }
+    // Verificar se a página é uma página de compras
+    shopContent.forEach((currency) => {
+      if (element.textContent && element.textContent.includes(currency)) {
+        shopPage = true;
       }
-      currentElement = currentElement.parentElement; // Move to the parent element
+    });
+
+    // Verificar se o elemento já foi processado
+    let alreadyProcessed = siblingsArray.some(group => group.includes(element));
+    if (alreadyProcessed) {
+      return;
     }
 
-    if (ancestorExists) {
-      return; // Skip this element if any ancestor is already in newElements
+    // Verificar se o elemento atende aos critérios
+    let shouldAdd = false;
+    for (let i = 0; i < classesCountdown.length; i++) {
+      const currentClass = classesCountdown[i];
+      if (element.className && element.className.toString().includes(currentClass)) {
+        shouldAdd = true;
+      }
     }
 
-    // Check classes
-    if (element.tagName !== 'BODY' && element.tagName !== 'HTML') {
-      for (let i = 0; i < classesCountdown.length; i++) {
-        const currentClass = classesCountdown[i];
-        if (element.className && element.className.toString().includes(currentClass)) {
-          if (!newElements.includes(element)) {
-            newElements.push(element);
-          }
-        }
+    for (let i = 0; i < contentCountdown.length; i++) {
+      const currentText = contentCountdown[i];
+      if (element.textContent && element.textContent.includes(currentText)) {
+        shouldAdd = true;
+      }
+    }
+
+    if (shouldAdd) {
+      // Adicionar o elemento ao foundElements
+      if (!foundElements.includes(element)) {
+        foundElements.push(element);
       }
 
-      // Check content
-      for (let i = 0; i < contentCountdown.length; i++) {
-        const currentText = contentCountdown[i];
-        if (element.textContent && element.textContent.includes(currentText)) {
-          if (!newElements.includes(element)) {
-            newElements.push(element);
+      // Criar um grupo de irmãos que atendem aos critérios
+      let siblingGroup = [];
+      let sibling = element.parentElement?.firstElementChild;
+
+      while (sibling) {
+        let siblingMatches = false;
+
+        // Verificar se o irmão atende aos critérios
+        for (let i = 0; i < classesCountdown.length; i++) {
+          const currentClass = classesCountdown[i];
+          if (sibling.className && sibling.className.toString().includes(currentClass)) {
+            siblingMatches = true;
           }
         }
+
+        for (let i = 0; i < contentCountdown.length; i++) {
+          const currentText = contentCountdown[i];
+          if (sibling.textContent && sibling.textContent.includes(currentText)) {
+            siblingMatches = true;
+          }
+        }
+
+        if (siblingMatches) {
+          siblingGroup.push(sibling);
+        }
+
+        sibling = sibling.nextElementSibling;
+      }
+
+      // Adicionar o grupo de irmãos ao siblingsArray global
+      if (siblingGroup.length > 0) {
+        siblingsArray.push(siblingGroup);
       }
     }
   });
 
-  return newElements;
+  if (shopPage) {
+    console.log("found elements: ", foundElements);
+    console.log("siblings array: ", siblingsArray);
+    return foundElements;
+  } else {
+    return [];
+  }
 }
 
 function toggleFakeTimerBorder(isChecked) {
 
   const elements = document.querySelectorAll('*'); // Selects all elements 
-  foundElements = getElementsCountdown(elements);
+  let foundElements = getElementsCountdown(elements);
+
+  createdDivs.forEach((element) => {
+    removeWrapper(element);
+  });
 
   if (isChecked) { // arrays diferentes e esta checado -> add estilo
     foundElements.forEach((element) => {
       addStyleElement(element); // adiciona borda vermelha e mensagem on hover
     });
   }
-  else if (!isChecked) {
-    foundElements.forEach((element) => {
-      removeStyleElement(element); // remove borda vermelha e mensagem on hover
+  else {
+    document.querySelectorAll('#hoverMessage-darkPattern-countdown').forEach(element => {
+      console.log("element hoverr: ", element);
+      element.remove();
+    });
+    foundElements.forEach((element) => { // remove borda vermelha e mensagem on hover
+      removeStyleElement(element); 
     });
   }
 }
@@ -166,7 +214,6 @@ window.onload = () => {
 
   // setInterval(function () {
   //   console.log(foundElements);
-
 
   //   const fakeTimerCheckbox = document.getElementById('fake-timer');
   //   if (fakeTimerCheckbox) {
