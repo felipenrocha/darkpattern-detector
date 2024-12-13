@@ -6,9 +6,9 @@ let shopContent = ["R$", "US$"]
 let createdDivs = [];
 let foundElements = []
 let siblingsArray = []
-let styledElements
+let styledElements = [];
 let shopPage = false;  //bool to check if the current page is a shopping one
-
+let hoverMessageBool = false;
 
 
 // Function that returns elements div with countdown classes or content
@@ -17,53 +17,55 @@ function addStyleElement(element) {
 
   // Cria um div pai
   const wrapper = document.createElement("div");
-  wrapper.style.border = "2px solid red"; // Adiciona borda vermelha
-  wrapper.style.display = "inline-block"; // Ajusta para envolver apenas o conteúdo do elemento
-  wrapper.style.position = "relative"; // Evita o impacto no layout e permite controle do posicionamento interno
-  wrapper.id = "wrapper-dark-pattern";
+  element.style.border = "2px solid red"; // Adiciona borda vermelha
+  // element.style.display = "inline-block"; // Ajusta para envolver apenas o conteúdo do elemento
+  // element.style.position = "relative"; // Evita o impacto no layout e permite controle do posicionamento interno
+  // element.id = "element-dark-pattern";
   // Adiciona efeito de hover
-  wrapper.style.transition = "border-color 0.3s ease";
-  wrapper.addEventListener("mouseenter", () => {
-    wrapper.style.borderColor = "blue"; // Altera a cor da borda ao passar o mouse
+  element.style.transition = "border-color 0.3s ease";
+  element.addEventListener("mouseenter", () => {
+    element.style.borderColor = "blue"; // Altera a cor da borda ao passar o mouse
   });
-  wrapper.addEventListener("mouseleave", () => {
-    wrapper.style.borderColor = "red"; // Retorna à cor original
+  element.addEventListener("mouseleave", () => {
+    element.style.borderColor = "red"; // Retorna à cor original
   });
+  if (!hoverMessageBool) { // somente 1 mensagem
+    hoverMessageBool = true;
+    // Adiciona uma mensagem ao passar o mouse
+    const hoverMessage = document.createElement("div");
+    hoverMessage.id = "hoverMessage-darkPattern-countdown";
+    hoverMessage.innerHTML = "Possível Dark Pattern: Fake countdown timer. <br>" +
+      "Cuidado, esse tipo de contagem regressiva muitas vezes não reflete o tempo real da promoção <br>" +
+      "e pode ser usado para criar urgência artificial.";
+    hoverMessage.style.textAlign = "center";
+    hoverMessage.style.position = "absolute";
+    hoverMessage.style.top = "-25px"; // Ajusta para exibir acima do wrapper
+    hoverMessage.style.left = "0";
+    hoverMessage.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+    hoverMessage.style.color = "white";
+    hoverMessage.style.padding = "5px";
+    hoverMessage.style.borderRadius = "2px";
+    hoverMessage.style.fontSize = "12px";
+    hoverMessage.style.whiteSpace = "nowrap";
+    hoverMessage.style.display = "none"; // Esconde por padrão
 
-  // Adiciona uma mensagem ao passar o mouse
-  const hoverMessage = document.createElement("div");
-  hoverMessage.id ="hoverMessage-darkPattern-countdown";
-  hoverMessage.innerHTML = "Possível Dark Pattern: Fake countdown timer. <br>" +
-    "Cuidado, esse tipo de contagem regressiva muitas vezes não reflete o tempo real da promoção <br>" +
-    "e pode ser usado para criar urgência artificial.";
-  hoverMessage.style.textAlign = "center";
-  hoverMessage.style.position = "absolute";
-  hoverMessage.style.top = "-25px"; // Ajusta para exibir acima do wrapper
-  hoverMessage.style.left = "0";
-  hoverMessage.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-  hoverMessage.style.color = "white";
-  hoverMessage.style.padding = "5px";
-  hoverMessage.style.borderRadius = "2px";
-  hoverMessage.style.fontSize = "12px";
-  hoverMessage.style.whiteSpace = "nowrap";
-  hoverMessage.style.display = "none"; // Esconde por padrão
+    // Exibe a mensagem ao passar o mouse
+    element.addEventListener("mouseenter", () => {
+      hoverMessage.style.display = "block";
+    });
 
-  // Exibe a mensagem ao passar o mouse
-  wrapper.addEventListener("mouseenter", () => {
-    hoverMessage.style.display = "block";
-  });
+    element.addEventListener("mouseleave", () => {
+      hoverMessage.style.display = "none";
+    });
 
-  wrapper.addEventListener("mouseleave", () => {
-    hoverMessage.style.display = "none";
-  });
-
-  // Move o elemento para dentro do div pai
-  if (element.parentNode) {
-    element.parentNode.insertBefore(wrapper, element);
+    // Move o elemento para dentro do div pai
+    if (element.parentNode) {
+      element.parentNode.insertBefore(element, element);
+    }
+    // element.appendChild(element);
+    element.appendChild(hoverMessage);
   }
-  wrapper.appendChild(element);
-  wrapper.appendChild(hoverMessage);
-  createdDivs.push(wrapper);
+  createdDivs.push(element);
 }
 function removeStyleElement(element) {
 
@@ -89,19 +91,34 @@ function removeStyleElement(element) {
 
 }
 function removeWrapper(element) {
-  if (element.id === "wrapper-dark-pattern") {
+  if (element.style.border === "2px solid red") {
     element.style.border = ""; // Adiciona borda vermelha
     element.style.display = ""; // Ajusta para envolver apenas o conteúdo do elemento
     element.style.position = ""; // Evita o impacto no layout e permite controle do posicionamento interno 
 
   }
 }
+function removeAncestors(siblingGroups) {
+  // Combina todos os elementos em um único array para verificar relações de ancestralidade
+  const allElements = siblingGroups.flat();
+
+  // Filtrar cada grupo removendo elementos ancestrais
+  return siblingGroups.map(group =>
+    group.filter(element =>
+      // Verifica se o elemento NÃO é ancestral de nenhum outro elemento
+      !allElements.some(otherElement =>
+        otherElement !== element && element.contains(otherElement)
+      )
+    )
+  ).filter(group => group.length > 0); // Remove grupos vazios
+}
+
 function getElementsCountdown(elements) {
   let foundElements = [];
   let shopPage = false;
 
   elements.forEach((element) => {
-    if(element.tagName == "BODY" || element.tagName == "SCRIPT" || element.tagName == "HTML" || element.tagName == "HEAD"){
+    if (element.tagName == "BODY" || element.tagName == "SCRIPT" || element.tagName == "HTML" || element.tagName == "HEAD") {
       return; // SKIP
     }
     // Verificar se a página é uma página de compras
@@ -176,6 +193,7 @@ function getElementsCountdown(elements) {
   });
 
   if (shopPage) {
+    siblingsArray = removeAncestors(siblingsArray);
     console.log("found elements: ", foundElements);
     console.log("siblings array: ", siblingsArray);
     return foundElements;
@@ -194,8 +212,8 @@ function toggleFakeTimerBorder(isChecked) {
   });
 
   if (isChecked) { // arrays diferentes e esta checado -> add estilo
-    foundElements.forEach((element) => {
-      addStyleElement(element); // adiciona borda vermelha e mensagem on hover
+    siblingsArray.forEach((element) => {
+      element.forEach((irmao) => { addStyleElement(irmao); }); // adiciona borda vermelha e mensagem on hover
     });
   }
   else {
@@ -204,7 +222,7 @@ function toggleFakeTimerBorder(isChecked) {
       element.remove();
     });
     foundElements.forEach((element) => { // remove borda vermelha e mensagem on hover
-      removeStyleElement(element); 
+      removeStyleElement(element);
     });
   }
 }
