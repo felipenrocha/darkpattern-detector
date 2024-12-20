@@ -2,7 +2,7 @@
 let infoIcon = document.getElementById('fake-timer-info');
 let modal = document.getElementById('info-fake-timer-modal');
 let closeModal = document.querySelector('.close-btn-fake-timer');
-
+let showCountdownDivs = document.getElementById('showCountdownDivs');
 
 // Mostra o modal ao clicar no ícone
 infoIcon.addEventListener('click', () => {
@@ -22,6 +22,18 @@ window.addEventListener('click', (event) => {
     }
 });
 
+showCountdownDivs.addEventListener('click', () => {
+    let chave = "createdDivsCountdown";
+    chrome.storage.local.get([chave], function (result) {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            chrome.scripting.executeScript({
+                target: { tabId: tabs[0].id },
+                func: removeBorda, // Função executada no content script
+            });
+        });
+    });
+
+});
 
 const fakeTimerCheckbox = document.getElementById('fake-timer');
 

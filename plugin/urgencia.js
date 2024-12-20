@@ -34,6 +34,7 @@ function addStyleElement(element) {
     "Cuidado, esse tipo de contagem regressiva muitas vezes não reflete o tempo real da promoção <br>" +
     "e pode ser usado para criar urgência artificial.<br><br>";
   hoverMessage.style.textAlign = "center";
+  element.classList.add("countdown-element-dark-pattern");
   hoverMessage.style.position = "absolute";
   hoverMessage.style.top = "-25px"; // Ajusta para exibir acima do wrapper
   hoverMessage.style.left = "0";
@@ -175,7 +176,15 @@ function isAncestorOf(ancestors, element) {
   return false;
 }
 
-
+function removeBorda() {
+  const elements = document.querySelectorAll('.countdown-element-dark-pattern');
+    
+    // Itera sobre os elementos e remove a borda e a classe
+    elements.forEach(element => {
+      element.style.border = ""; // Remove a propriedade de borda
+      // element.classList.remove('countdown-element-dark-pattern'); // Remove a classe
+  });
+}
 function toggleFakeTimerBorder(isChecked) {
 
   const elements = document.querySelectorAll('*'); // Selects all elements 
@@ -206,10 +215,25 @@ function toggleFakeTimerBorder(isChecked) {
         }
       }
     });
+
     if (createdDivs.length > 0 && !notified) {
       notified = true;
       chrome.runtime.sendMessage({ event: "triggerNotificationCountdownTimer" }); // notifica ao usuario que foi encontrado possiveis dark patterns
     }
+
+    let chave = "createdDivsCountdown";
+
+    // Converta os elementos HTML para suas representações como strings
+    let elementosComoStrings = createdDivs.map(elemento => elemento.outerHTML);
+
+    // Transforme o array em uma string JSON
+    let valor = JSON.stringify(elementosComoStrings);
+    // Envie a mensagem para salvar os dados
+    chrome.runtime.sendMessage({ action: "salvar", chave: chave, valor: valor }, function (response) {
+      console.log('Response Salvar: ', response);
+    });
+
+
   }
   else {
     createdDivs.forEach((element) => { // remove borda vermelha e mensagem on hover
@@ -225,10 +249,11 @@ function toggleFakeTimerBorder(isChecked) {
     });
     createdDivs = [];
     notified = false;
+
   }
+
 }
 window.onload = () => {
-  toggleFakeTimerBorder(true);
   setInterval(function () {
     const elements = document.querySelectorAll('*'); // Selects all elements 
     const fakeTimerCheckbox = document.getElementById('fake-timer');
@@ -248,6 +273,11 @@ window.onload = () => {
       toggleFakeTimerBorder(true);
     }
 
-  }, 2000);
+  }, 1000);
+  let chave = "teste";
+  let valor = "teste-valor";
+  let message = { chave: chave, valor: valor };
+
+
 
 };  

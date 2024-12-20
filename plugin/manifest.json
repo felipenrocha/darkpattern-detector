@@ -5,7 +5,11 @@
   "permissions": [
     "scripting",
     "activeTab",
-    "notifications"
+    "notifications",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*/*"
   ],
   "action": {
     "default_popup": "popup.html",
