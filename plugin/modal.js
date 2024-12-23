@@ -40,7 +40,7 @@ function showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink
         <span class="close-btn-fake-timer">&times;</span>
         <h2>${darkPatternName}</h2>
         <p style="text-align: justify;">${textContent}</p>
-         <p>Fonte: <a href=${sourceLink} target="_blank"
+         <p>Fonte: <a href="https://translate.google.com/translate?hl=pt&sl=en&u=${sourceLink}" target="_blank"
                         rel="noopener noreferrer">
                        ${sourceTitle}
                     </a></p>

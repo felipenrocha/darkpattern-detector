@@ -58,8 +58,8 @@
     font-weight: bold;
   }
   .high-demand-message {
-    font-size: 26px;
-    color: #ff8c00; /* Laranja para destacar a mensagem */
+    font-size: 24px;
+    color:#ff4747; /* Laranja para destacar a mensagem */
     text-align: center;
     font-weight: bold;
   }
@@ -72,7 +72,7 @@
   
   .add-to-cart .btn {
     padding: 12px 24px;
-    background-color: #007bff;
+    background-color: #ff8c00;
     color: white;
     font-size: 16px;
     border: none;
