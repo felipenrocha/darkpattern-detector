@@ -1,6 +1,8 @@
 // Seleciona o ícone de informação e o modal de fake
 let infoIconCountdown = document.getElementById('fake-timer-info');
 let infoIconLowStock = document.getElementById('low-stock-info');
+let infoHighDemand = document.getElementById('high-demand-info');
+
 
 let modal = document.getElementById('info-fake-timer-modal');
 let closeModal = document.querySelector('.close-btn-fake-timer');
@@ -44,7 +46,7 @@ function showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink
                     </a></p>
         <p style="text-align: justify;">Exemplo de ${darkPatternName}:</p>
             <img src=${imageSrc} alt="Exemplo de ${darkPatternName}"
-                    style="display: block; margin: 20px auto; height: 170px;width:170px;">      </div>
+                    style="display: block; margin: 20px auto; width: 80%;" >      </div>
       </div>
     `;
 
@@ -104,7 +106,22 @@ infoIconLowStock.addEventListener('click', () => {
     const sourceTitle = "Deceptive Design - Fake scarcity";
     showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink, sourceTitle);
 });
-
+infoHighDemand.addEventListener('click', () => {
+    const darkPatternName = "Mensagens Falsas de Alta Demanda (<span style='font-style: italic;'>Fake High Demand Messages</span>)";
+    const textContent = `
+    <p style="text-align: justify;">Mensagens falsas de "alta demanda" são um tipo de dark pattern da categoria escassez, 
+    usadas para criar um senso de urgência, fazendo o consumidor acreditar que o item está sendo disputado por muitas pessoas, 
+    aumentando a pressão para que ele compre rapidamente.
+    <br>
+    Essas mensagens geralmente indicam que "muitas pessoas estão vendo esse item" ou "somente algumas unidades restantes", 
+    quando, na verdade, essa informação pode ser completamente fabricada ou manipulada.
+    <br>
+    Certifique-se de que está tomando a decisão de compra com base no seu real interesse e não pela pressão de uma demanda falsa.</p>`;
+    const imageSrc = 'examples/fake-high-demand.png';
+    const sourceLink = 'https://www.deceptive.design/types/fake-scarcity';
+    const sourceTitle = "Deceptive Design - Fake scarcity";
+        showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink, sourceTitle);
+});
 
 showCountdownDivs.addEventListener('click', () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

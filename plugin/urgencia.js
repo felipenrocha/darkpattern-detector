@@ -1,6 +1,6 @@
 // arquivo designado para programar a deteccao e lóogica para seção dos dark patterns de urgencia
 
-let classesCountdown = ['timer', 'countdown', 'clock'];
+let classesCountdown = ['timer', 'countdown', 'clock', 'count-down', 'Timer'];
 let contentCountdown = ["Expira em", "Resta Apenas", "Termina em", "dias restantes", "Oferta termina em"];
 let shopContent = ["R$", "US$", "£"];
 let createdDivs = [];
@@ -47,7 +47,7 @@ function isShoppingPage() {
   const priceRegex = /(\$|€|£|₹|USD|EUR|INR)[\s\d,.]+/;
   const priceElements = Array.from(document.querySelectorAll('*')).filter(el => priceRegex.test(el.textContent));
   // Require multiple prices in a specific area (e.g., product grid or list
-  const hasMultiplePrices = priceElements.length > 5;
+  const hasMultiplePrices = priceElements.length >= 5;
   console.log("priceElements.length:", priceElements.length);
 
   console.log("hasmultipleprices:", hasMultiplePrices);
