@@ -15,10 +15,7 @@ let notified = false;
 function addStyleElement(element) {
   // Função que irá adicionar na página a borda vermelha e mensagem ao passar o mouse por cima do div
 
-  element.style.border = "2px solid red"; // Adiciona borda vermelha
-  // element.style.display = "inline-block"; // Ajusta para envolver apenas o conteúdo do elemento
-  // element.style.position = "relative"; // Evita o impacto no layout e permite controle do posicionamento interno
-  // element.id = "element-dark-pattern";
+  element.style.border = "6px solid red"; // Adiciona borda vermelha
   // Adiciona efeito de hover
   element.style.transition = "border-color 0.3s ease";
   element.addEventListener("mouseenter", () => {
@@ -176,14 +173,18 @@ function isAncestorOf(ancestors, element) {
   return false;
 }
 
-function removeBorda() {
+function scrollToCountdown() {
+  console.log("in");
+  
   const elements = document.querySelectorAll('.countdown-element-dark-pattern');
-    
-    // Itera sobre os elementos e remove a borda e a classe
-    elements.forEach(element => {
-      element.style.border = ""; // Remove a propriedade de borda
-      // element.classList.remove('countdown-element-dark-pattern'); // Remove a classe
-  });
+  if (elements.length > 0) {
+    elements[0].scrollIntoView({
+      behavior: 'smooth'
+    }); // scrolla para o elemento
+  }else{
+    alert('Não foram encontrados Possíveis Dark Patterns de Countdown Timer nessa página.')
+  }
+
 }
 function toggleFakeTimerBorder(isChecked) {
 
@@ -221,23 +222,14 @@ function toggleFakeTimerBorder(isChecked) {
       chrome.runtime.sendMessage({ event: "triggerNotificationCountdownTimer" }); // notifica ao usuario que foi encontrado possiveis dark patterns
     }
 
-    let chave = "createdDivsCountdown";
 
-    // Converta os elementos HTML para suas representações como strings
-    let elementosComoStrings = createdDivs.map(elemento => elemento.outerHTML);
-
-    // Transforme o array em uma string JSON
-    let valor = JSON.stringify(elementosComoStrings);
-    // Envie a mensagem para salvar os dados
-    chrome.runtime.sendMessage({ action: "salvar", chave: chave, valor: valor }, function (response) {
-      console.log('Response Salvar: ', response);
-    });
 
 
   }
   else {
     createdDivs.forEach((element) => { // remove borda vermelha e mensagem on hover
       removeStyleElement(element);
+      element.classList.remove('countdown-element-dark-pattern'); // Remove a classe
     });
     // remove hover messages que existirem:
     // hoverMessage-darkPattern-countdown
