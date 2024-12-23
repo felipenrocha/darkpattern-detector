@@ -72,8 +72,8 @@ label {
 }
 
 .info-icon {
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
 }
 
@@ -86,7 +86,7 @@ p {
 
 /* Modal oculto por padrão */
 .modal {
-  display: none;
+  display: block;
   position: fixed;
   z-index: 1000;
   left: 0;
