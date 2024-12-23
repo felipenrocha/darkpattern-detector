@@ -1,8 +1,10 @@
 // Seleciona o ícone de informação e o modal de fake
 let infoIconCountdown = document.getElementById('fake-timer-info');
+let infoIconLowStock = document.getElementById('low-stock-info');
+
 let modal = document.getElementById('info-fake-timer-modal');
 let closeModal = document.querySelector('.close-btn-fake-timer');
-let showCountdownDivs = document.getElementById('showCountdownDivs');
+let showCountdownDivs = document.getElementById('show-countdown-divs');
 
 
 
@@ -41,8 +43,8 @@ function showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink
                        ${sourceTitle}
                     </a></p>
         <p style="text-align: justify;">Exemplo de ${darkPatternName}:</p>
-            <img src=${imageSrc} alt="Exemplo de contagem regressiva falsa"
-                    style="display: block; margin: 20px auto; height: 170px;">      </div>
+            <img src=${imageSrc} alt="Exemplo de ${darkPatternName}"
+                    style="display: block; margin: 20px auto; height: 170px;width:170px;">      </div>
       </div>
     `;
 
@@ -69,7 +71,7 @@ function showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink
 }
 // Mostra o modal ao clicar no ícone
 infoIconCountdown.addEventListener('click', () => {
-    const darkPatternName = "Fake Countdown Timer";
+    const darkPatternName = "Contagem regressiva falsa <span style='font-style: italic; '>(Fake Countdown Timer)</span>";
     const textContent = `
     <p style="text-align: justify;">
             Cronômetros falsos de promoções são usados para criar um senso de  urgência no consumidor,
@@ -81,10 +83,26 @@ infoIconCountdown.addEventListener('click', () => {
     decisões rapidamente, muitas vezes contrárias aos seus próprios interesses.
     <br>Reflita se essa promoção é realmente única neste momento e evite sentir-se pressionado a adquirir um item apenas porque a oferta está prestes a expira
     </p>`;
-    const imageSrc =  'examples/fake-countdown.png';
+    const imageSrc = 'examples/fake-countdown.png';
     const sourceLink = 'https://www.deceptive.design/types/fake-urgency';
-    const sourceTitle =  "Deceptive Design - Fake Urgency";
-    showDarkPatternModal(darkPatternName,textContent, imageSrc, sourceLink,sourceTitle );
+    const sourceTitle = "Deceptive Design - Fake Urgency";
+    showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink, sourceTitle);
+});
+
+infoIconLowStock.addEventListener('click', () => {
+    const darkPatternName = "Mensagens de estoque baixo (<span style='font-style: italic; '>Low Stock Messages</span>)";
+    const textContent = `
+    <p style="text-align: justify;">Mensagens falsas de "estoque baixo" são um tipo de dark pattern da categoria escassez,
+     usadas para criar um senso de urgência e o medo de perder uma oferta,
+     através da apresentação de uma falsa mensagem sobre a quantidade de itens restantes no estoque.
+    <br>
+    Muitas vezes, o número de produtos restantes no estoque não corresponde ao valor real e é escolhido de forma arbitrária.
+    <br>
+    Certifique-se de que realmente deseja comprar o item e não se deixe pressionar pela quantidade limitada de estoque.    </p>`;
+    const imageSrc = 'examples/fake-low-stock.png';
+    const sourceLink = 'https://www.deceptive.design/types/fake-scarcity';
+    const sourceTitle = "Deceptive Design - Fake scarcity";
+    showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink, sourceTitle);
 });
 
 

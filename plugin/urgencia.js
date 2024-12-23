@@ -1,7 +1,7 @@
 // arquivo designado para programar a deteccao e lóogica para seção dos dark patterns de urgencia
 
 let classesCountdown = ['timer', 'countdown', 'clock'];
-let contentCountdown = ["Expira em", "Resta Apenas", "Termina em", "dias restantes"];
+let contentCountdown = ["Expira em", "Resta Apenas", "Termina em", "dias restantes", "Oferta termina em"];
 let shopContent = ["R$", "US$", "£"];
 let createdDivs = [];
 let foundElements = []
@@ -47,7 +47,7 @@ function isShoppingPage() {
   const priceRegex = /(\$|€|£|₹|USD|EUR|INR)[\s\d,.]+/;
   const priceElements = Array.from(document.querySelectorAll('*')).filter(el => priceRegex.test(el.textContent));
   // Require multiple prices in a specific area (e.g., product grid or list
-  const hasMultiplePrices = priceElements.length > 3;
+  const hasMultiplePrices = priceElements.length > 5;
   console.log("priceElements.length:", priceElements.length);
 
   console.log("hasmultipleprices:", hasMultiplePrices);
@@ -128,8 +128,11 @@ function getElementsCountdown(elements) {
   if (!shopPage) {
     return;
   }
+  
   elements.forEach((element) => {
     if (element.tagName == "BODY" || element.tagName == "SCRIPT" || element.tagName == "HTML" || element.tagName == "HEAD") {
+    // console.log("SKIP: ", element);
+      
       return; // SKIP
     }
     // Verificar se o elemento já foi processado
@@ -152,9 +155,12 @@ function getElementsCountdown(elements) {
       if (element.textContent && element.textContent.includes(currentText)) {
         shouldAdd = true;
       }
+    
     }
-
+  
     if (shouldAdd) {
+      console.log('should add:', shouldAdd);
+      
       // Adicionar o elemento ao foundElements
       if (!foundElements.includes(element)) {
         foundElements.push(element);
@@ -243,6 +249,8 @@ function toggleFakeTimerBorder(isChecked) {
 
   if (isChecked) { // arrays diferentes e esta checado -> add estilo
     foundElements = getElementsCountdown(currentElements);
+    // console.log("found Elements: ", foundElements);
+    
     siblingsArray.forEach((element, index) => {
       // checa se tem algum ancestral dentro dos elementos a serem adicionados (se tiver, pula)
       let ancestorFound = false;
@@ -266,7 +274,8 @@ function toggleFakeTimerBorder(isChecked) {
         }
       }
     });
-
+    console.log("cerated Divs: ", createdDivs);
+    
     if (createdDivs.length > 0 && !notified) {
       notified = true;
       chrome.runtime.sendMessage({ event: "triggerNotificationCountdownTimer" }); // notifica ao usuario que foi encontrado possiveis dark patterns
@@ -315,7 +324,7 @@ window.onload = () => {
       createdDivs = [];
       toggleFakeTimerBorder(true);
     } else {
-      clearInterval(timer);
+      // clearInterval(timer);
     }
 
   }, 1000);
