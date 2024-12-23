@@ -6,9 +6,54 @@ let shopContent = ["R$", "US$", "£"];
 let createdDivs = [];
 let foundElements = []
 let siblingsArray = []
-let styledElements = [];
+let currentElements = [];
 let shopPage = false;  //bool to check if the current page is a shopping one
 let notified = false;
+const blacklistedDomains = [
+  'facebook.com',
+  'instagram.com',
+  'twitter.com',
+  'youtube.com',
+  'linkedin.com',
+  'tiktok.com',
+  'pinterest.com',
+  'snapchat.com',
+  'reddit.com',
+  'tumblr.com',
+  'quora.com',
+  'weibo.com',
+  'vk.com',
+  'flickr.com',
+  'discord.com',
+  'telegram.org',
+  'whatsapp.com',
+  'medium.com',
+  'slack.com',
+  'clubhouse.com'
+]; // muitas vezes redes sociais tem multiplos anuncios mas nao sao´paginas de compra.
+
+
+
+function isShoppingPage() {
+
+
+  const currentDomain = window.location.hostname; // Domínio atual
+
+  if (blacklistedDomains.some(domain => currentDomain.includes(domain))) {
+    console.log("blacklisted");
+    
+    return false;
+  }
+  const priceRegex = /(\$|€|£|₹|USD|EUR|INR)[\s\d,.]+/;
+  const priceElements = Array.from(document.querySelectorAll('*')).filter(el => priceRegex.test(el.textContent));
+  // Require multiple prices in a specific area (e.g., product grid or list
+  const hasMultiplePrices = priceElements.length > 3;
+  console.log("priceElements.length:", priceElements.length);
+
+  console.log("hasmultipleprices:", hasMultiplePrices);
+
+  return hasMultiplePrices;
+}
 
 
 // Function that returns elements div with countdown classes or content
@@ -78,19 +123,15 @@ function removeAncestors(siblingGroups) {
 
 function getElementsCountdown(elements) {
   let foundElements = [];
-  let shopPage = false;
-
+  shopPage = isShoppingPage();
+  console.log("shop Page: ", shopPage);
+  if (!shopPage) {
+    return;
+  }
   elements.forEach((element) => {
     if (element.tagName == "BODY" || element.tagName == "SCRIPT" || element.tagName == "HTML" || element.tagName == "HEAD") {
       return; // SKIP
     }
-    // Verificar se a página é uma página de compras
-    shopContent.forEach((currency) => {
-      if (element.textContent && element.textContent.includes(currency)) {
-        shopPage = true;
-      }
-    });
-
     // Verificar se o elemento já foi processado
     let alreadyProcessed = siblingsArray.some(group => group.includes(element));
     if (alreadyProcessed) {
@@ -157,6 +198,7 @@ function getElementsCountdown(elements) {
 
   if (shopPage) {
     siblingsArray = removeAncestors(siblingsArray);
+    console.log("shop Page: ", shopPage)
     return foundElements;
   } else {
     return [];
@@ -177,6 +219,8 @@ function scrollToCountdown() {
   console.log("in");
 
   const elements = document.querySelectorAll('.countdown-element-dark-pattern');
+  console.log(elements);
+
   if (elements.length > 0) {
     const element = elements[0];
     const offset = -150; // Ajuste o valor para a distância acima desejada (scollar um pouco acima do relogio)
@@ -194,11 +238,11 @@ function scrollToCountdown() {
 }
 function toggleFakeTimerBorder(isChecked) {
 
-  const elements = document.querySelectorAll('*'); // Selects all elements 
+  currentElements = document.querySelectorAll('*'); // Selects all elements 
 
 
   if (isChecked) { // arrays diferentes e esta checado -> add estilo
-    foundElements = getElementsCountdown(elements);
+    foundElements = getElementsCountdown(currentElements);
     siblingsArray.forEach((element, index) => {
       // checa se tem algum ancestral dentro dos elementos a serem adicionados (se tiver, pula)
       let ancestorFound = false;
@@ -249,13 +293,14 @@ function toggleFakeTimerBorder(isChecked) {
     notified = false;
 
   }
+  currentElements = document.querySelectorAll('*'); // Selects all elements 
 
 }
 window.onload = () => {
-  setInterval(function () {
-    const elements = document.querySelectorAll('*'); // Selects all elements 
+  let timer = setInterval(function () {
     const fakeTimerCheckbox = document.getElementById('fake-timer');
-    if (JSON.stringify(foundElements) != JSON.stringify(getElementsCountdown(elements)) && !fakeTimerCheckbox) {
+
+    if (currentElements.length != document.querySelectorAll('*').length && !fakeTimerCheckbox) {
       createdDivs.forEach((element) => {
         // remove borda vermelha e mensagem on hover
         removeStyleElement(element);
@@ -269,13 +314,10 @@ window.onload = () => {
       });
       createdDivs = [];
       toggleFakeTimerBorder(true);
+    } else {
+      clearInterval(timer);
     }
 
   }, 1000);
-  let chave = "teste";
-  let valor = "teste-valor";
-  let message = { chave: chave, valor: valor };
-
-
 
 };  
