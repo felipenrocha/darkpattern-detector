@@ -175,13 +175,19 @@ function isAncestorOf(ancestors, element) {
 
 function scrollToCountdown() {
   console.log("in");
-  
+
   const elements = document.querySelectorAll('.countdown-element-dark-pattern');
   if (elements.length > 0) {
-    elements[0].scrollIntoView({
+    const element = elements[0];
+    const offset = -150; // Ajuste o valor para a distância acima desejada (scollar um pouco acima do relogio)
+    const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+    const scrollToPosition = elementPosition + offset;
+
+    window.scrollTo({
+      top: scrollToPosition,
       behavior: 'smooth'
-    }); // scrolla para o elemento
-  }else{
+    });
+  } else {
     alert('Não foram encontrados Possíveis Dark Patterns de Countdown Timer nessa página.')
   }
 
@@ -211,7 +217,7 @@ function toggleFakeTimerBorder(isChecked) {
           addStyleElement(parent);
           createdDivs.push(parent);
         } else {
-          addStyleElement(element[0]);
+          addStyleElement(element[0]); // somente o primeiro elemento de irmaos é adicionado a borda
           createdDivs.push(element[0]);
         }
       }
