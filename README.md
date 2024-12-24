@@ -32,7 +32,7 @@ Siga os passos abaixo para instalar o plugin no Google Chrome:
    - No canto superior direito da tela de Extensões, ative a opção **Modo de Desenvolvedor**.  
 3. **Carregue o plugin**  
    - Clique em **Carregar sem compactação**.  
-   - Selecione a pasta do plugin para carregar.  
+   - Selecione a pasta onde você extraiu os arquivos do plugin.  
 
 ---
 
@@ -51,3 +51,6 @@ Sinta-se à vontade para contribuir com melhorias para o projeto. Faça um fork 
 
 ---
 
+### Licença
+
+Este projeto está licenciado sob a [Licença MIT](LICENSE).
