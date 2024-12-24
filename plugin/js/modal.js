@@ -7,6 +7,8 @@ let infoHighDemand = document.getElementById('high-demand-info');
 let modal = document.getElementById('info-fake-timer-modal');
 let closeModal = document.querySelector('.close-btn-fake-timer');
 let showCountdownDivs = document.getElementById('show-countdown-divs');
+let showLowStockDivs = document.getElementById('show-low-stock-divs');
+
 
 
 
@@ -40,7 +42,7 @@ function showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink
         <span class="close-btn-fake-timer">&times;</span>
         <h2>${darkPatternName}</h2>
         <p style="text-align: justify;">${textContent}</p>
-         <p>Fonte: <a href=${sourceLink} target="_blank"
+         <p>Fonte: <a href="https://translate.google.com/translate?hl=pt&sl=en&u=${sourceLink}" target="_blank"
                         rel="noopener noreferrer">
                        ${sourceTitle}
                     </a></p>
@@ -120,19 +122,28 @@ infoHighDemand.addEventListener('click', () => {
     const imageSrc = 'examples/fake-high-demand.png';
     const sourceLink = 'https://www.deceptive.design/types/fake-scarcity';
     const sourceTitle = "Deceptive Design - Fake scarcity";
-        showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink, sourceTitle);
+    showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink, sourceTitle);
 });
 
 showCountdownDivs.addEventListener('click', () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.scripting.executeScript({
             target: { tabId: tabs[0].id },
-            func: scrollToCountdown, // Função executada no content script
+            func: scrollToCountdown,
+            // Função executada no content script
         });
     });
 });
-
-const fakeTimerCheckbox = document.getElementById('fake-timer');
+showLowStockDivs.addEventListener('click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.scripting.executeScript({
+            target: { tabId: tabs[0].id },
+            func: scrollToLowStock,
+            // Função executada no content script
+        });
+    });
+});
+const fakeTimerCheckbox = document.getElementById('fake-timer-checkbox');
 
 fakeTimerCheckbox.addEventListener('change', (event) => {
 
@@ -141,15 +152,34 @@ fakeTimerCheckbox.addEventListener('change', (event) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.scripting.executeScript({
             target: { tabId: tabs[0].id },
-            files: ['urgencia.js']
-        }, () => {
-            chrome.scripting.executeScript({
-                target: { tabId: tabs[0].id },
-                func: toggleFakeTimerBorder,
-                args: [isChecked]
-            });
+            func: toggleFakeTimerBorder,
+            args: [isChecked]
         });
     });
 
+
 });
+
+const lowStockCheckbox = document.getElementById('low-stock-checkbox');
+lowStockCheckbox.addEventListener('change', (event) => {
+    const isChecked = event.target.checked;
+    // Envia a mensagem para o content script da página ativa
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.scripting.executeScript({
+            target: { tabId: tabs[0].id },
+            func: toggleLowStockMessages,
+            args: [isChecked]
+        });
+    });
+
+
+});
+window.onload = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.scripting.executeScript({
+            target: { tabId: tabs[0].id },
+            files: ['js/urgencia.js', 'js/escassez.js']
+        })
+    });
+}
 
