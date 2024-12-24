@@ -10,7 +10,7 @@ let currentElementsScarcity = [];
 // Palavras-chave comuns em mensagens de baixa disponibilidade
 const lowStockKeywords = [
   "restantes", "disponíveis", "no estoque", "à venda", "em estoque",
-  "para você", "unidades", "unidade", "peças", "somente", "últimas", 
+  "para você", "unidades", "unidade", "peças", "somente", "últimas",
 ];
 
 // Palavras-chave que aparecem antes do número
