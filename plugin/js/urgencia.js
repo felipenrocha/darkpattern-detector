@@ -177,7 +177,7 @@ function toggleFakeTimerBorder(isChecked) {
 
 }
 window.onload = () => {
-  let timer = setInterval(function () {
+  let timerCountdown = setInterval(function () {
     const fakeTimerCheckbox = document.getElementById('fake-timer-checkbox');
 
     if (currentElements.length != document.querySelectorAll('*').length && !fakeTimerCheckbox) {
@@ -190,7 +190,7 @@ window.onload = () => {
       createdDivs = [];
       toggleFakeTimerBorder(true);
     } else {
-      clearInterval(timer);
+      // clearInterval(timerCountdown);
     }
 
   }, 1000);

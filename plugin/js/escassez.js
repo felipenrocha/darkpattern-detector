@@ -9,13 +9,12 @@ let currentElementsScarcity = [];
 
 // Palavras-chave comuns em mensagens de baixa disponibilidade
 const lowStockKeywords = [
-  "restantes", "disponíveis", "no estoque", "à venda", "em estoque",
-  "para você", "unidades", "unidade", "peças", "somente", "últimas",
+  "restantes", "no estoque", "à venda", "em estoque",
 ];
 
 // Palavras-chave que aparecem antes do número
 const preNumberKeywords = [
-  "resta", "restam", "apenas", "somente", "últimas", "faltam"
+  "resta", "restam", "apenas", "somente", "últimas", "faltam", "resta só", "restam so", 
 ];
 
 // Regex para detectar mensagens de baixa disponibilidade
@@ -91,7 +90,7 @@ function scrollToLowStock() {
   }
 
 }
-let timer = setInterval(function () {
+let timerEscassez = setInterval(function () {
   const fakeTimerLowStock = document.getElementById('low-stock-checkbox');
 
   if (currentElementsScarcity.length != document.querySelectorAll('*').length && !fakeTimerLowStock) {
@@ -103,7 +102,7 @@ let timer = setInterval(function () {
     createdDivsLowStock = [];
     toggleLowStockMessages(true);
   } else {
-    // clearInterval(timer);
+    // clearInterval(timerEscassez);
   }
 
 }, 1000);
