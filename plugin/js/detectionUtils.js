@@ -1,5 +1,12 @@
 
 
+
+
+
+
+
+
+
 const blacklistedDomains = [
   'facebook.com',
   'instagram.com',
@@ -24,21 +31,6 @@ const blacklistedDomains = [
   'clubhouse.com'
 ];
 
-
-function isShoppingPage() {
-
-
-  const currentDomain = window.location.hostname; // Domínio atual
-
-  if (blacklistedDomains.some(domain => currentDomain.includes(domain))) {
-    return false;
-  }
-  const priceRegex = /(\$|€|£|₹|USD|EUR|INR)[\s\d,.]+/;
-  const priceElements = Array.from(document.querySelectorAll('*')).filter(el => priceRegex.test(el.textContent));
-  // Require multiple prices in a specific area (e.g., product grid or list
-  const hasMultiplePrices = priceElements.length >= 5;
-  return hasMultiplePrices;
-}
 
 
 function addStyleElement(element, hoverMessageContent, idHoverMessage, className) {

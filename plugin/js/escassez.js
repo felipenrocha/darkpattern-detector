@@ -2,7 +2,6 @@
 
 
 
-let shopPageScarcity = false;  // bool to check if the current page is a shopping one
 let createdDivsLowStock = [];
 let notifiedLowStock = false;
 let currentElementsScarcity = [];
@@ -14,7 +13,7 @@ const lowStockKeywords = [
 
 // Palavras-chave que aparecem antes do número
 const preNumberKeywords = [
-  "resta", "restam", "apenas", "somente", "últimas", "faltam", "resta só", "restam so", 
+  "resta", "restam", "apenas", "somente", "últimas", "faltam", "resta só", "restam so",
 ];
 
 // Regex para detectar mensagens de baixa disponibilidade
@@ -32,14 +31,17 @@ const hoverMessageContentLowStock = "<br>Possível Dark Pattern: Mensagens falsa
   "Atenção, algumas lojas podem exibir alertas de estoque limitado para pressionar o usuário a comprar rapidamente, " +
   "mesmo quando o estoque real não está tão baixo.<br><br>";
 const idStockMessage = "hoverMessage-darkPattern-stock";
-const classStockMessage = "stock-message-dark-pattern";
+const classStockMessage = "stock-message-dark-pattern"; 
+
+
+
+
 
 
 function toggleLowStockMessages(isChecked) {
-  shopPageScarcity = isShoppingPage();
 
-
-  if (!shopPageScarcity) { // se nao for um site de compras retorne e nao faça nada com DOM
+  console.log("Shop Page Bool: ", shopPageBool);
+  if (!shopPageBool) { // se nao for um site de compras retorne e nao faça nada com DOM
     return;
   }
   if (isChecked) {
@@ -90,6 +92,9 @@ function scrollToLowStock() {
   }
 
 }
+
+
+
 let timerEscassez = setInterval(function () {
   const fakeTimerLowStock = document.getElementById('low-stock-checkbox');
 
@@ -102,7 +107,10 @@ let timerEscassez = setInterval(function () {
     createdDivsLowStock = [];
     toggleLowStockMessages(true);
   } else {
-    // clearInterval(timerEscassez);
+    clearInterval(timerEscassez);
   }
 
 }, 1000);
+
+
+// console.log(API_KEY);

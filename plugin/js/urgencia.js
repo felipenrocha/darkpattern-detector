@@ -6,7 +6,6 @@ let createdDivs = [];
 let foundElements = []
 let siblingsArray = []
 let currentElements = [];
-let shopPage = false;  //bool to check if the current page is a shopping one
 let notified = false;
 // muitas vezes redes sociais tem multiplos anuncios mas nao sao´paginas de compra.
 
@@ -22,11 +21,7 @@ function getElements(elements, classes, content) {
   // retorna elementos encontrados elementos irmaos contendo as classes especificas do darkpattern
   let foundElements = [];
   let siblingsArray = [];
-  shopPage = isShoppingPage();
-  if (!shopPage) {
-    return;
-  }
-
+ 
   elements.forEach((element) => {
     if (element.tagName == "BODY" || element.tagName == "SCRIPT" || element.tagName == "HTML" || element.tagName == "HEAD") {
 
@@ -98,7 +93,7 @@ function getElements(elements, classes, content) {
     }
   });
 
-  if (shopPage) {
+  if (shopPageBool) {
     siblingsArray = removeAncestors(siblingsArray);
     return [foundElements, siblingsArray];
   } else {
@@ -125,9 +120,12 @@ function scrollToCountdown() {
 }
 function toggleFakeTimerBorder(isChecked) {
 
+  if(!shopPageBool){
+    return;
+  }
   currentElements = document.querySelectorAll('*'); // Selects all elements 
 
-
+  
   if (isChecked) { // arrays diferentes e esta checado -> add estilo
     foundElements = getElements(currentElements, classesCountdown, contentCountdown)[0];
     siblingsArray = getElements(currentElements, classesCountdown, contentCountdown)[1];
@@ -190,7 +188,7 @@ window.onload = () => {
       createdDivs = [];
       toggleFakeTimerBorder(true);
     } else {
-      // clearInterval(timerCountdown);
+      clearInterval(timerCountdown);
     }
 
   }, 1000);

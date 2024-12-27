@@ -17,8 +17,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ success: true });
   }
   else if(request.event === "triggerNotificationLowStockMessage"){
-    console.log("teste");
-    
     notifyUser("Possível Dark Pattern Econtrado", "Mensagem Falsa de Estoque Baixo: verifique seu plugin para localizá-lo e confirmar se ele se aplica ao cenário identificado.");
     sendResponse({ success: true });
   }

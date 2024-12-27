@@ -1,3 +1,4 @@
+
 // Seleciona o ícone de informação e o modal de fake
 let infoIconCountdown = document.getElementById('fake-timer-info');
 let infoIconLowStock = document.getElementById('low-stock-info');
@@ -174,6 +175,11 @@ lowStockCheckbox.addEventListener('change', (event) => {
 
 
 });
+
+
+
+
+
 window.onload = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.scripting.executeScript({
