@@ -17,7 +17,7 @@ let manageTexts = [
 
 let rejectTexts = [
     'recusar', 'rejeitar', 'não aceitar', 'deny',
-    'decline', 'refuse', 'cancelar', 'não concordar'
+    'decline', 'refuse', 'cancelar', 'não concordar', 'reject', 'necessary', "Necessary", "dispensar"
 ];
 let cookiesElement = []; // array de quadruplos elementos: [[Parent do botao de aceitar, botao de aceitar, botao de recusar, botao de preferencias]] de cada possivel cookie pra recusar.
 let indiceCookie = -1;
@@ -59,7 +59,7 @@ function removeDuplicateParents(cookiesElement) {
 }
 
 
-function toggleCookiesDeny(isChecked) {
+function getCookiesDeny(isChecked) {
     // Buscar todos os elementos da página
     let possibleCookies = [];
     const novosElementos = document.querySelectorAll('*');
@@ -77,7 +77,7 @@ function toggleCookiesDeny(isChecked) {
                 const acceptButton = el;
                 let parent = el;
 
-                while (parent && !parent.textContent.toLowerCase().includes('cookie')) {
+                while ((parent && !parent.textContent.toLowerCase().includes('cookie')) || parent == el) {
                     parent = parent.parentNode;  // Sobe para o próximo nível do DOM
                 }
                 if (parent.tagName === 'BODY' || el.tagName === 'SCRIPT' || el.tagName === 'HTML' || !parent.textContent.toLowerCase().includes('cookie')) {
@@ -100,7 +100,7 @@ function toggleCookiesDeny(isChecked) {
     possibleCookies = removeDuplicateParents(possibleCookies);
     // let montarHTML = montarHTMLCookiesElement(cookiesElement);
     // getCookieElement(cookiesElement);
-
+    console.log("Cookies Element: ", possibleCookies);
     return possibleCookies;
 
 
@@ -111,11 +111,11 @@ function scrollToCookies() {
 }
 
 let timerCookies = setInterval(function () {
-    if (cookiesElement.length != toggleCookiesDeny(true).length) {
+    if (cookiesElement.length !== getCookiesDeny(true).length) {
         console.log("Novo elemento encontrado, alterando possiveis cookies...")
-        cookiesElement = toggleCookiesDeny(true);
-        console.log("Possiveis cookies: ", cookiesElement);
+        cookiesElement = getCookiesDeny(true);
         loadCookiesIndex();
+        console.log("Possiveis cookies: ", cookiesElement);
         console.log("Indice cookie: ", indiceCookie);
         if (indiceCookie != -1) {
             cookieElement = cookiesElement[indiceCookie - 1];
@@ -131,26 +131,38 @@ let timerCookies = setInterval(function () {
             const [parent, acceptButton, refuseButton, manageButton] = cookieElement;
 
             if (refuseButton) {
-                console.log("Rejeitando Cookies. Botão apertado: ", refuseButton);
+                console.log("Apertando Botão de recusar cookies... ");
                 refuseButton.click();
-                console.log("Cookies rejeitados.")
+                console.log("Botão apertado: ", refuseButton);
             }
             else if (manageButton) {
-                console.log("Não foram encontrados seções para recusa de Cookies. Buscando Botão para gerenciar preferências...");
-                console.log("Abrindo preferências. Botão apertado: ", manageButton);
-                manageButton.click();
+                console.log("Old cookies element: ", cookiesElement);
+                manageButton.click(); // clica
+                // procura denovo por cookies:
+                setTimeout(
+                    function () {
+                        cookiesElement = getCookiesDeny(true);
+                        console.log("New cookies element: ", cookiesElement);
+                        // loadCookiesIndex();
+
+                    }, 1); // delay para abrir preferencias
+
+
+
+
             }
 
 
         } else {
-            console.log("Não foram encontrados seções para recusa de Cookies nem aceitação de cookies.");
-
+            console.log("Não foram encontradas seções para recusa, gerenciamento, ou aceita de cookies.")
         }
         clearInterval(timerCookies);
     }
-}, 2000)
+}, 5000)
+
 
 
 async function loadCookiesIndex() {
+    // cookiesElement = getCookiesDeny(true);
     indiceCookie = await getCookieElement(cookiesElement);
 }

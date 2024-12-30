@@ -57,16 +57,16 @@ function montarHTMLCookiesElement(cookiesElement) {
         const [parent, acceptButton, refuseButton, manageButton] = cookieElement;
         let parentClassesText = parent.clas
         let text =
-            `<${parent.tagName.toLowerCase()} ${parent.className}>
-                <${acceptButton ? acceptButton.tagName.toLowerCase() : ''}>
+            `<${parent.tagName.toLowerCase()} class='${parent.className}' id='${parent.id ? parent.id : ''}'>
+                <${acceptButton ? acceptButton.tagName.toLowerCase() + "class = '" + acceptButton.className + "' id='" + acceptButton.id + "'" : ''}>
                     ${acceptButton ? acceptButton.innerHTML : ''}
                 </${acceptButton ? acceptButton.tagName.toLowerCase() : ''}>
 
-                <${refuseButton ? refuseButton.tagName.toLowerCase() : ''}>
+                <${refuseButton ? refuseButton.tagName.toLowerCase() + "class = '" + refuseButton.className + "' id='" + refuseButton.id + "'" : ''}>
                     ${refuseButton ? refuseButton.innerHTML : ''}
                 </${refuseButton ? refuseButton.tagName.toLowerCase() : ''}>
 
-                <${manageButton ? manageButton.tagName.toLowerCase() : ''}>
+                <${manageButton ? manageButton.tagName.toLowerCase() + "class = '" + manageButton.className + "' id='" + manageButton.id + "'" : ''}>
                     ${manageButton ? manageButton.innerHTML : ''}
                 </${manageButton ? manageButton.tagName.toLowerCase() : ''}>
             </${parent.tagName.toLowerCase()}>
@@ -117,8 +117,9 @@ async function getCookieElement(cookiesElement) {
             console.error("API Error:", data.error);
         } else {
             const text = JSON.parse(data.candidates[0]['content']['parts'][0]['text']);
+            console.log("Prompt: ", prompt)
             console.log("Resposta Cookie API GEMINI: ", text);
-
+            // indiceCookie = text;
             return text;
         }
     }
