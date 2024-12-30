@@ -4,11 +4,16 @@ let infoIconCountdown = document.getElementById('fake-timer-info');
 let infoIconLowStock = document.getElementById('low-stock-info');
 let infoHighDemand = document.getElementById('high-demand-info');
 
+let infoCookies = document.getElementById('cookies-info');
+
+
 
 let modal = document.getElementById('info-fake-timer-modal');
 let closeModal = document.querySelector('.close-btn-fake-timer');
 let showCountdownDivs = document.getElementById('show-countdown-divs');
 let showLowStockDivs = document.getElementById('show-low-stock-divs');
+let showCookieskDivs = document.getElementById('show-cookies-divs');
+
 
 
 
@@ -109,6 +114,9 @@ infoIconLowStock.addEventListener('click', () => {
     const sourceTitle = "Deceptive Design - Fake scarcity";
     showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink, sourceTitle);
 });
+
+
+
 infoHighDemand.addEventListener('click', () => {
     const darkPatternName = "Mensagens Falsas de Alta Demanda (<span style='font-style: italic;'>Fake High Demand Messages</span>)";
     const textContent = `
@@ -123,6 +131,21 @@ infoHighDemand.addEventListener('click', () => {
     const imageSrc = 'examples/fake-high-demand.png';
     const sourceLink = 'https://www.deceptive.design/types/fake-scarcity';
     const sourceTitle = "Deceptive Design - Fake scarcity";
+    showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink, sourceTitle);
+});
+
+infoCookies.addEventListener('click', () => {
+    const darkPatternName = "Obstrução (<span style='font-style: italic;'>Obstruction</span>)";
+    const textContent = `
+    <p style="text-align: justify;">Obstrução é uma tipo de Dark Pattern que visa dificultar ou tornar mais trabalhoso para o usuário 
+    realizar uma ação específica. O objetivo é fazer com que o usuário, muitas vezes sem perceber, tome decisões que são mais favoráveis para a empresa ou serviço,
+     mas que podem não ser a escolha mais desejada ou consciente para ele.
+    <br>
+    Este comportamento é observado em sites que dificultam a recusa de cookies desnecessários para o funcionamento da página por exemplo,
+     com o único intuito de coletar dados do usuário.`;
+    const imageSrc = 'examples/cookies-info.png';
+    const sourceLink = 'https://www.deceptive.design/types/obstruction';
+    const sourceTitle = "Deceptive Design - Obstruction";
     showDarkPatternModal(darkPatternName, textContent, imageSrc, sourceLink, sourceTitle);
 });
 
@@ -144,6 +167,19 @@ showLowStockDivs.addEventListener('click', () => {
         });
     });
 });
+
+
+showCookieskDivs.addEventListener('click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.scripting.executeScript({
+            target: { tabId: tabs[0].id },
+            func: scrollToCookies,
+            // Função executada no content script
+        });
+    });
+});
+
+
 const fakeTimerCheckbox = document.getElementById('fake-timer-checkbox');
 
 fakeTimerCheckbox.addEventListener('change', (event) => {
@@ -184,7 +220,7 @@ window.onload = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.scripting.executeScript({
             target: { tabId: tabs[0].id },
-            files: ['js/urgencia.js', 'js/escassez.js']
+            files: ['js/obstrucao.js', 'js/urgencia.js', 'js/escassez.js']
         })
     });
 }

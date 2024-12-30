@@ -52,6 +52,7 @@ function montarPromptPaginaCompra() {
 async function isShoppingPage() {
     console.log("API KEY: ", API_KEY);
     console.log("API_URL: ", API_URL);
+    return true;
     const currentDomain = window.location.hostname;
     if (currentDomain == '') {
         console.log("current doimain", currentDomain);
@@ -104,5 +105,5 @@ async function loadShopPageBool() {
     shopPageBool = await isShoppingPage();
 }
 
-loadShopPageBool();
+loadShopPageBool(); // Detecção se a página é umapagina de compra;
 

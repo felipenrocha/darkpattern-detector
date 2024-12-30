@@ -8,12 +8,12 @@ let currentElementsScarcity = [];
 
 // Palavras-chave comuns em mensagens de baixa disponibilidade
 const lowStockKeywords = [
-  "restantes", "no estoque", "à venda", "em estoque",
+  "restantes", "no estoque", "à venda", "em estoque", 
 ];
 
 // Palavras-chave que aparecem antes do número
 const preNumberKeywords = [
-  "resta", "restam", "apenas", "somente", "últimas", "faltam", "resta só", "restam so",
+  "resta", "restam", "apenas", "somente", "últimas", "faltam", "resta só", "restam só",
 ];
 
 // Regex para detectar mensagens de baixa disponibilidade
@@ -53,7 +53,7 @@ function toggleLowStockMessages(isChecked) {
         return; // SKIP
       }
 
-      if (element.textContent && lowStockRegex.test(element.textContent) && element.children.length === 0) {
+      if (element.textContent && containsLowStockMessage(element.textContent.toLowerCase()) && element.children.length === 0) {
 
         addStyleElement(element, hoverMessageContentLowStock, idStockMessage, classStockMessage);
         createdDivsLowStock.push(element);
@@ -110,7 +110,8 @@ let timerEscassez = setInterval(function () {
     clearInterval(timerEscassez);
   }
 
-}, 1000);
+}, 10000);
 
+toggleLowStockMessages(true);
 
 // console.log(API_KEY);

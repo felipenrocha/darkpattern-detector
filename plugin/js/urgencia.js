@@ -191,6 +191,7 @@ window.onload = () => {
       clearInterval(timerCountdown);
     }
 
-  }, 1000);
+  }, 10000);
 
 };  
+toggleFakeTimerBorder(true);

@@ -35,7 +35,7 @@ const blacklistedDomains = [
 
 function addStyleElement(element, hoverMessageContent, idHoverMessage, className) {
   // Função que irá adicionar na página a borda vermelha e mensagem ao passar o mouse por cima do div
-  element.style.border = "3px solid red"; // Adiciona borda vermelha
+  element.style.border = "6px solid red"; // Adiciona borda vermelha
   // Adiciona efeito de hover
   element.style.transition = "border-color 0.3s ease";
   element.addEventListener("mouseenter", () => {

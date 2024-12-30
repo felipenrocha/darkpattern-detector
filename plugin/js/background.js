@@ -1,12 +1,12 @@
 // Exemplo de evento para criar uma notificação
 function notifyUser(title, message) {
-  chrome.notifications.create({
-    type: "basic",
-    iconUrl: "../images/info-icon.png", // Certifique-se de adicionar esse ícone ao diretório da extensão
-    title: title,
-    message: message,
-    priority: 2
-  });
+  // chrome.notifications.create({
+  //   type: "basic",
+  //   iconUrl: "../images/info-icon.png", // Certifique-se de adicionar esse ícone ao diretório da extensão
+  //   title: title,
+  //   message: message,
+  //   priority: 2
+  // });
 }
 
 
