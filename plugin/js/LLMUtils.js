@@ -2,6 +2,8 @@
 console.log(API_KEY, API_URL);
 
 let shopPageBool = false;
+// let indiceCookie = -1;
+
 
 function montarPromptPaginaCompra() {
     // Domínio atual da página
@@ -47,7 +49,87 @@ function montarPromptPaginaCompra() {
     return prompt;
 }
 
+// Função para montar o HTML de Cookies
+function montarHTMLCookiesElement(cookiesElement) {
+    let cookiesText = [];
+    cookiesElement.forEach(cookieElement => {
+        // console.log("Cookie Element: ", cookieElement);
+        const [parent, acceptButton, refuseButton, manageButton] = cookieElement;
+        let parentClassesText = parent.clas
+        let text =
+            `<${parent.tagName.toLowerCase()} ${parent.className}>
+                <${acceptButton ? acceptButton.tagName.toLowerCase() : ''}>
+                    ${acceptButton ? acceptButton.innerHTML : ''}
+                </${acceptButton ? acceptButton.tagName.toLowerCase() : ''}>
 
+                <${refuseButton ? refuseButton.tagName.toLowerCase() : ''}>
+                    ${refuseButton ? refuseButton.innerHTML : ''}
+                </${refuseButton ? refuseButton.tagName.toLowerCase() : ''}>
+
+                <${manageButton ? manageButton.tagName.toLowerCase() : ''}>
+                    ${manageButton ? manageButton.innerHTML : ''}
+                </${manageButton ? manageButton.tagName.toLowerCase() : ''}>
+            </${parent.tagName.toLowerCase()}>
+        `
+        text = text.replace(/(\r\n|\n|\r)/gm, "");
+        cookiesText.push(text);
+    });
+
+    return cookiesText;
+}
+// 
+
+function montarPromptGetCookieElement(cookiesElement) {
+    const cookiesText = montarHTMLCookiesElement(cookiesElement);
+
+    let prompt = `
+    Identifique qual dos seguintes elementos HTML representam com maior probabilidade caixas de diálogo de cookies. 
+    Responda com um único número, representando o índice do elemento na lista. 
+    Se nenhum elemento representar uma caixa de diálogo de cookies, responda com -1.
+  
+    Numero de elementos a serem analisados: ${cookiesText.length}
+    Array dos Elementos HTML:
+  
+    ${cookiesText}
+    Responda sempre com apenas um número e nada mais: Responda -1 caso nenhum elemento represente ou o índice do elemento caso contrário.
+    `;
+
+    return prompt;
+}
+async function getCookieElement(cookiesElement) {
+    const prompt = montarPromptGetCookieElement(cookiesElement);
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ text: prompt }]
+                }]
+            }),
+        });
+
+        const data = await response.json();
+        if (data.error) {
+            console.error("API Error:", data.error);
+        } else {
+            const text = JSON.parse(data.candidates[0]['content']['parts'][0]['text']);
+            console.log("Resposta Cookie API GEMINI: ", text);
+
+            return text;
+        }
+    }
+    catch (error) {
+        data = await error.json();
+        console.error("Request failed:", data);
+        alert("Erro na LLM!");
+
+        return false;
+    }
+}
 
 async function isShoppingPage() {
     console.log("API KEY: ", API_KEY);
@@ -56,7 +138,7 @@ async function isShoppingPage() {
     const currentDomain = window.location.hostname;
     if (currentDomain == '') {
         console.log("current doimain", currentDomain);
-        
+
         return true;
     }
     const prompt = montarPromptPaginaCompra();
