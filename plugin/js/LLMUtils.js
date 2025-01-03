@@ -96,41 +96,41 @@ function montarPromptGetCookieElement(cookiesElement) {
 
     return prompt;
 }
-async function getCookieElement(cookiesElement) {
-    const prompt = montarPromptGetCookieElement(cookiesElement);
+// async function getCookieElement(cookiesElement) {
+//     const prompt = montarPromptGetCookieElement(cookiesElement);
 
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: prompt }]
-                }]
-            }),
-        });
+//     try {
+//         const response = await fetch(API_URL, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({
+//                 contents: [{
+//                     parts: [{ text: prompt }]
+//                 }]
+//             }),
+//         });
 
-        const data = await response.json();
-        if (data.error) {
-            console.error("API Error:", data.error);
-        } else {
-            const text = JSON.parse(data.candidates[0]['content']['parts'][0]['text']);
-            console.log("Prompt: ", prompt)
-            console.log("Resposta Cookie API GEMINI: ", text);
-            // indiceCookie = text;
-            return text;
-        }
-    }
-    catch (error) {
-        data = await error.json();
-        console.error("Request failed:", data);
-        alert("Erro na LLM!");
+//         const data = await response.json();
+//         if (data.error) {
+//             console.error("API Error:", data.error);
+//         } else {
+//             const text = JSON.parse(data.candidates[0]['content']['parts'][0]['text']);
+//             console.log("Prompt: ", prompt)
+//             console.log("Resposta Cookie API GEMINI: ", text);
+//             // indiceCookie = text;
+//             return text;
+//         }
+//     }
+//     catch (error) {
+//         data = await error.json();
+//         console.error("Request failed:", data);
+//         alert("Erro na LLM!");
 
-        return false;
-    }
-}
+//         return false;
+//     }
+// }
 
 async function isShoppingPage() {
     console.log("API KEY: ", API_KEY);
