@@ -17,6 +17,7 @@ let manageTexts = [
 
 let rejectTexts = [
     'recusar', 'rejeitar', 'não aceitar', 'deny', 'negar',
+
     'decline', 'refuse', 'cancelar', 'não concordar', 'reject', 'necessary', "Necessary", "dispensar"
 ];
 let cookiesElement = []; // array de quadruplos elementos: [[Parent do botao de aceitar, botao de aceitar, botao de recusar, botao de preferencias]] de cada possivel cookie pra recusar.
@@ -56,7 +57,7 @@ function removeDuplicateParents(cookiesElement) {
     // Remover os elementos na ordem inversa
     removeIndices.forEach(index => {
         cookiesElement.splice(index, 1);
-    }); 
+    });
     return cookiesElement;
 }
 
@@ -64,7 +65,7 @@ function removeDuplicateParents(cookiesElement) {
 function getCookiesDeny(isChecked) {
     // Buscar todos os elementos da página
     let possibleCookies = [];
-    const novosElementos = document.querySelectorAll('*'); 
+    const novosElementos = document.querySelectorAll('*');
 
     novosElementos.forEach((el) => {
         if (el.tagName === 'BODY' || el.tagName === 'SCRIPT' || el.tagName === 'HTML') {
@@ -75,7 +76,7 @@ function getCookiesDeny(isChecked) {
             if ((el.tagName === 'BUTTON' || el.tagName === 'A') && el.textContent.toLowerCase().includes(text.toLowerCase())) {
                 // Caso o elemento seja um botão de "aceitar", podemos clicar nele
                 buttonFound = true;
-                
+
                 const acceptButton = el;
                 let parent = el;
 
@@ -87,13 +88,14 @@ function getCookiesDeny(isChecked) {
                 const manageButton = Array.from(parent.querySelectorAll('button, a')).find(elm =>
                     manageTexts.some(manageText => elm.textContent.toLowerCase().includes(manageText.toLowerCase()))
                 );
-                const refuseButton = Array.from(parent.querySelectorAll('button, a')).find(elm =>
+                const refuseButtons = Array.from(parent.querySelectorAll('button, a')).filter(elm =>
                     rejectTexts.some(rejectText => elm.textContent.toLowerCase().includes(rejectText.toLowerCase()))
                 );
+                const refuseButton = refuseButtons[refuseButtons.length - 1];
                 if (!parent.tagName || parent.tagName === 'DOCUMENT' || parent.tagName === 'BODY' || el.tagName === 'SCRIPT' || el.tagName === 'HTML') {
                     // do nothing
                 } else {
-                    
+
                     possibleCookies.push([parent, acceptButton, refuseButton, manageButton]);
                 }
                 // break; // Se encontrar, não precisa verificar os outros textos do array
@@ -153,81 +155,87 @@ let timerCookie = setInterval(async function () {
             } else {
                 const indice = JSON.parse(data.candidates[0]['content']['parts'][0]['text']);
                 // console.log("Prompt: ", prompt)
-                cookieElement = cookiesElement[indice - 1];
-                const [parent, acceptButton, refuseButton, manageButton] = cookieElement;
-                console.log('cookie Chosen: ', cookieElement);
-                cookieProcessed = true;
-                if (refuseButton) {
-                    console.log("Encontrado Botão de recusar cookies:", refuseButton);
-                    console.log("Apertando Botão de recusar cookies... ");
-                    refuseButton.click();
-                    console.log("Botão apertado. Cookies recusados.");
-                }
-                else if (manageButton) {
-                    console.log("Encontrado botão de definições:", manageButton);
-                    console.log("Apertando Botão de definições... ");
-                    let oldCookies = cookiesElement;
-                    console.log("Old cookies: ", oldCookies);
-                    manageButton.click(); // clica
-                    setTimeout(
-                        async function () {
-                            cookiesElement = getCookiesDeny(true);
-                            // Filtra elementos do novo array que não estão no antigo
-                            cookiesElement.splice(0, oldCookies.length - 1)
-                            console.log("New cookies element: ", cookiesElement);
-                            // console.log("Unique Elements: ", uniqueElements);
+                if (indice > 0) {
+                    cookieElement = cookiesElement[indice - 1];
+                    const [parent, acceptButton, refuseButton, manageButton] = cookieElement;
+                    console.log('cookie Chosen: ', cookieElement);
+                    cookieProcessed = true;
+                    if (refuseButton) {
+                        console.log("Encontrado Botão de recusar cookies:", refuseButton);
+                        console.log("Apertando Botão de recusar cookies... ");
+                        refuseButton.click();
+                        console.log("Botão apertado. Cookies recusados.");
+                    }
+                    else if (manageButton) {
+                        console.log("Encontrado botão de definições:", manageButton);
+                        console.log("Apertando Botão de definições... ");
+                        let oldCookies = cookiesElement;
+                        console.log("Old cookies: ", oldCookies);
+                        manageButton.click(); // clica
+                        setTimeout(
+                            async function () {
+                                cookiesElement = getCookiesDeny(true);
+                                // Filtra elementos do novo array que não estão no antigo
+                                cookiesElement.splice(0, oldCookies.length - 1)
+                                console.log("New cookies element: ", cookiesElement);
+                                // console.log("Unique Elements: ", uniqueElements);
 
-                            const prompt = montarPromptGetCookieElement(cookiesElement);
-                            // console.log("Prompt: ", prompt);
+                                const prompt = montarPromptGetCookieElement(cookiesElement);
 
-                            try {
-                                const response = await fetch(API_URL, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        contents: [{
-                                            parts: [{ text: prompt }]
-                                        }]
-                                    }),
-                                });
+                                try {
+                                    const response = await fetch(API_URL, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            contents: [{
+                                                parts: [{ text: prompt }]
+                                            }]
+                                        }),
+                                    });
 
-                                const data = await response.json();
-                                const indice = JSON.parse(data.candidates[0]['content']['parts'][0]['text']);
-                                // console.log("Prompt: ", prompt)
-                                cookieElement = cookiesElement[indice - 1];
-                                const [parent, acceptButton, refuseButton, manageButton] = cookieElement;
-                                console.log('Cookie Chosen Definition Chosen: ', cookieElement);
-                                if (refuseButton) {
-                                    console.log("Encontrado Botão de recusar cookies:", refuseButton);
-                                    console.log("Apertando Botão de recusar cookies... ");
-                                    refuseButton.click();
-                                    console.log("Botão apertado. Cookies recusados.");
+                                    const data = await response.json();
+                                    const indice = JSON.parse(data.candidates[0]['content']['parts'][0]['text']);
+                                    // console.log("Prompt: ", prompt)
+                                    cookieElement = cookiesElement[indice - 1];
+                                    const [parent, acceptButton, refuseButton, manageButton] = cookieElement;
+                                  
+                                    
+                                    console.log('Cookie Chosen Definition Chosen: ', cookieElement);
+                                    if (refuseButton) {
+                                        console.log("Encontrado Botão de recusar cookies:", refuseButton);
+                                        console.log("Apertando Botão de recusar cookies... ");
+                                        refuseButton.click();
+                                        console.log("Botão apertado. Cookies recusados.");
+                                    }else{
+                                        console.log("Não foi possível recusar os cookies.");
+                                        
+                                    }
+
+
+                                } catch (error) {
+                                    data = await error.json();
+                                    console.error("Request failed:", data);
+                                    alert("Erro na LLM!");
+
+                                    return false;
                                 }
 
 
-                            } catch (error) {
-                                data = await error.json();
-                                console.error("Request failed:", data);
-                                alert("Erro na LLM!");
-
-                                return false;
-                            }
 
 
 
+                            }, .5); // delay para abrir preferencias
 
 
-                        }, .5); // delay para abrir preferencias
-
-
-                }
-                else if (acceptButton) {
-                    console.log("Encontrado Apenas Botão de aceitar cookies:", acceptButton);
-                    console.log("Apertando Botão de aceitar cookies... ");
-                    acceptButton.click();
-                    console.log("Botão apertado. Cookies recusados.");
+                    }
+                    else if (acceptButton) {
+                        console.log("Encontrado Apenas Botão de aceitar cookies:", acceptButton);
+                        console.log("Apertando Botão de aceitar cookies... ");
+                        acceptButton.click();
+                        console.log("Botão apertado. Cookies recusados.");
+                    }
                 }
             }
         }

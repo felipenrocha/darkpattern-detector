@@ -55,22 +55,9 @@ function montarHTMLCookiesElement(cookiesElement) {
     cookiesElement.forEach(cookieElement => {
         // console.log("Cookie Element: ", cookieElement);
         const [parent, acceptButton, refuseButton, manageButton] = cookieElement;
-        let parentClassesText = parent.clas
-        let text =
-            `<${parent.tagName.toLowerCase()} class='${parent.className}' id='${parent.id ? parent.id : ''}'>
-                <${acceptButton ? acceptButton.tagName.toLowerCase() + "class = '" + acceptButton.className + "' id='" + acceptButton.id + "'" : ''}>
-                    ${acceptButton ? acceptButton.innerHTML : ''}
-                </${acceptButton ? acceptButton.tagName.toLowerCase() : ''}>
 
-                <${refuseButton ? refuseButton.tagName.toLowerCase() + "class = '" + refuseButton.className + "' id='" + refuseButton.id + "'" : ''}>
-                    ${refuseButton ? refuseButton.innerHTML : ''}
-                </${refuseButton ? refuseButton.tagName.toLowerCase() : ''}>
+        let text = parent.innerHTML;
 
-                <${manageButton ? manageButton.tagName.toLowerCase() + "class = '" + manageButton.className + "' id='" + manageButton.id + "'" : ''}>
-                    ${manageButton ? manageButton.innerHTML : ''}
-                </${manageButton ? manageButton.tagName.toLowerCase() : ''}>
-            </${parent.tagName.toLowerCase()}>
-        `
         text = text.replace(/(\r\n|\n|\r)/gm, "");
         cookiesText.push(text);
     });
